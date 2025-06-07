@@ -1,0 +1,166 @@
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&display=swap');
+
+:root {
+    --primary-color: #4A90E2;
+    --secondary-color: #F5A623;
+    --background-color: #F7F9FC;
+    --card-bg-color: #FFFFFF;
+    --text-color: #4A4A4A;
+    --light-gray: #EAECEF;
+    --success-color: #7ED321;
+    --danger-color: #D0021B;
+}
+
+body {
+    font-family: 'Sarabun', sans-serif;
+    margin: 0;
+    padding: 2rem;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.dashboard-container {
+    max-width: 1200px;
+    margin: auto;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.steps-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.card {
+    background: var(--card-bg-color);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    padding: 2rem;
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card h2 {
+    font-size: 1.8rem;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+    margin-top: 0;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+input[type="file"], input[type="number"] {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--light-gray);
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+button:hover {
+    background-color: #357ABD;
+}
+
+button.secondary {
+    background-color: var(--secondary-color);
+}
+button.secondary:hover {
+    background-color: #D98E1A;
+}
+
+button:disabled {
+    background-color: #B0C4DE;
+    cursor: not-allowed;
+}
+
+.progress-bar {
+    width: 100%;
+    background-color: var(--light-gray);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 1rem;
+}
+
+.progress-bar-inner {
+    width: 0%;
+    height: 24px;
+    background-color: var(--success-color);
+    background-image: linear-gradient(45deg, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent);
+    background-size: 40px 40px;
+    animation: progress-bar-stripes 2s linear infinite;
+    text-align: center;
+    color: white;
+    font-weight: 700;
+    line-height: 24px;
+    transition: width 0.5s ease-out;
+}
+
+@keyframes progress-bar-stripes {
+    from { background-position: 40px 0; }
+    to { background-position: 0 0; }
+}
+
+#training-log {
+    background: #2d2d2d;
+    color: #f1f1f1;
+    padding: 1rem;
+    border-radius: 6px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9rem;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    margin-top: 1rem;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+details[open] summary {
+    color: var(--secondary-color);
+}
+
+#font-list {
+    list-style-type: '📄 ';
+    padding-left: 1rem;
+    max-height: 150px;
+    overflow-y: auto;
+}

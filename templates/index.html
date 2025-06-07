@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lao OCR Training Center - ศูนย์ฝึกสอนระบบ OCR ภาษาลาว</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700&display=swap');
+
+        :root {
+            --primary-color: #4A90E2;
+            --secondary-color: #F5A623;
+            --background-color: #F7F9FC;
+            --card-bg-color: #FFFFFF;
+            --text-color: #4A4A4A;
+            --light-gray: #EAECEF;
+            --success-color: #7ED321;
+            --danger-color: #D0021B;
+            --warning-color: #F5A623;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .status-bar {
+            background: var(--card-bg-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .status-item {
+            text-align: center;
+            padding: 1rem;
+            border-radius: 8px;
+            background: var(--background-color);
+        }
+
+        .status-item.success {
+            border-left: 4px solid var(--success-color);
+        }
+
+        .status-item.warning {
+            border-left: 4px solid var(--warning-color);
+        }
+
+        .status-item.error {
+            border-left: 4px solid var(--danger-color);
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--card-bg-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            padding: 2rem;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h2 {
+            font-size: 1.8rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        input[type="file"], 
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--light-gray);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input[type="file"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        button:hover {
+            background-color: #357ABD;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        button.secondary {
+            background-color: var(--secondary-color);
+        }
+
+        button.secondary:hover {
+            background-color: #D98E1A;
+        }
+
+        button.danger {
+            background-color: var(--danger-color);
+        }
+
+        button.danger:hover {
+            background-color: #B00117;
+        }
+
+        button:disabled {
+            background-color: #B0C4DE;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            background-color: var(--light-gray);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 1rem;
+            height: 30px;
+        }
+
+        .progress-bar-inner {
+            width: 0%;
+            height: 100%;
+            background-color: var(--success-color);
+            background-image: linear-gradient(45deg, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent);
+            background-size: 40px 40px;
+            animation: progress-bar-stripes 2s linear infinite;
+            text-align: center;
+            color: white;
+            font-weight: 700;
+            line-height: 30px;
+            transition: width 0.5s ease-out;
+        }
+
+        @keyframes progress-bar-stripes {
+            from { background-position: 40px 0; }
+            to { background-position: 0 0; }
+        }
+
+        .log-area {
+            background: #2d2d2d;
+            color: #f1f1f1;
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin-top: 1rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        details {
+            margin-top: 1rem;
+            border: 1px solid var(--light-gray);
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+        }
+
+        details summary {
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--primary-color);
+            user-select: none;
+        }
+
+        details[open] summary {
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .file-list {
+            list-style: none;
+            padding: 0;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .file-list li {
+            padding: 0.5rem;
+            border-bottom: 1px solid var(--light-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .file-list li:last-child {
+            border-bottom: none;
+        }
+
+        .dataset-preview {
+            background: var(--card-bg-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .image-item {
+            border: 1px solid var(--light-gray);
+            border-radius: 6px;
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+
+        .image-item:hover {
+            transform: scale(1.05);
+        }
+
+        .image-item img {
+            width: 100%;
+            height: 80px;
+            object-fit: cover;
+        }
+
+        .image-item .text {
+            padding: 0.5rem;
+            font-size: 0.9rem;
+            background: var(--background-color);
+            text-align: center;
+        }
+
+        .models-section {
+            background: var(--card-bg-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .model-list {
+            margin-top: 1rem;
+        }
+
+        .model-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid var(--light-gray);
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+        }
+
+        .model-info {
+            flex: 1;
+        }
+
+        .model-name {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .model-meta {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .pagination button {
+            width: auto;
+            padding: 0.5rem 1rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .alert.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert.warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .status-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 ศูนย์ฝึกสอนระบบ OCR ภาษาลาว</h1>
+            <p>ระบบฝึกสอนโมเดล OCR สำหรับภาษาลาวด้วย Deep Learning</p>
+        </header>
+
+        <!-- สถานะระบบ -->
+        <div class="status-bar">
+            <h3>📊 สถานะระบบ</h3>
+            <div class="status-grid" id="system-status">
+                <div class="status-item">
+                    <div>⏳ กำลังตรวจสอบ...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alert Area -->
+        <div id="alert-area"></div>
+
+        <!-- Main Content -->
+        <div class="main-grid">
+            <!-- ขั้นตอนที่ 1: เตรียมข้อมูล -->
+            <div class="card">
+                <h2>📁 ขั้นตอนที่ 1: เตรียมข้อมูล</h2>
+                
+                <div class="form-group">
+                    <label for="font-file-input">1. อัปโหลดฟอนต์ภาษาลาว (.ttf, .otf)</label>
+                    <input type="file" id="font-file-input" accept=".ttf,.otf" multiple>
+                    <button id="font-upload-btn" class="secondary">
+                        <span>📤</span> อัปโหลดฟอนต์
+                    </button>
+                    
+                    <details id="font-dropdown">
+                        <summary>📋 รายชื่อฟอนต์ที่อัปโหลด (<span id="font-count">0</span> ไฟล์)</summary>
+                        <ul id="font-list" class="file-list">
+                            <li>ยังไม่มีฟอนต์ที่อัปโหลด</li>
+                        </ul>
+                    </details>
+                </div>
+
+                <div class="form-group">
+                    <label for="corpus-file-input">2. อัปโหลดไฟล์ Corpus (.txt)</label>
+                    <input type="file" id="corpus-file-input" accept=".txt">
+                    <button id="corpus-upload-btn" class="secondary">
+                        <span>📤</span> อัปโหลด Corpus
+                    </button>
+                    <div id="corpus-info" class="hidden" style="margin-top: 0.5rem; color: var(--success-color);">
+                        ✅ Corpus: <span id="corpus-lines">0</span> บรรทัด
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button id="generate-dataset-btn">
+                        <span>⚙️</span> สร้างชุดข้อมูล
+                    </button>
+                    <button id="clear-dataset-btn" class="danger">
+                        <span>🗑️</span> ลบ Dataset
+                    </button>
+                </div>
+
+                <div id="dataset-status-area" class="hidden">
+                    <h4>📊 สถานะการสร้างข้อมูล</h4>
+                    <div class="progress-bar">
+                        <div id="dataset-progress-bar" class="progress-bar-inner">0%</div>
+                    </div>
+                    <div id="dataset-log" class="log-area"></div>
+                </div>
+            </div>
+
+            <!-- ขั้นตอนที่ 2: ฝึกสอนโมเดล -->
+            <div class="card">
+                <h2>🤖 ขั้นตอนที่ 2: ฝึกสอนโมเดล</h2>
+                
+                <div class="form-group">
+                    <label for="epochs-input">จำนวน Epochs:</label>
+                    <input type="number" id="epochs-input" value="100" min="1" max="1000">
+                    <small style="color: #666;">แนะนำ: 100-500 epochs สำหรับผลลัพธ์ที่ดี</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="gpu-select">เลือก GPU:</label>
+                    <select id="gpu-select">
+                        <option value="auto">ตรวจสอบอัตโนมัติ</option>
+                    </select>
+                </div>
+
+                <button id="start-training-btn">
+                    <span>⚡</span> เริ่มการฝึกสอน
+                </button>
+                
+                <div id="training-status-area">
+                    <h4>📊 สถานะการฝึกสอน</h4>
+                    <div class="progress-bar">
+                        <div id="training-progress-bar" class="progress-bar-inner">รอเริ่ม...</div>
+                    </div>
+                    <div id="training-log" class="log-area">{ "status": "idle" }</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dataset Preview -->
+        <div id="dataset-preview-section" class="dataset-preview hidden">
+            <h2>🖼️ ตัวอย่างชุดข้อมูล</h2>
+            <div class="pagination">
+                <button id="prev-page-btn" class="secondary">◀ ก่อนหน้า</button>
+                <span id="page-info">หน้า 1 / 1</span>
+                <button id="next-page-btn" class="secondary">ถัดไป ▶</button>
+            </div>
+            <div id="image-gallery" class="image-gallery"></div>
+        </div>
+
+        <!-- Models Section -->
+        <div id="models-section" class="models-section">
+            <h2>💾 โมเดลที่ฝึกแล้ว</h2>
+            <button id="refresh-models-btn" class="secondary" style="width: auto; margin-bottom: 1rem;">
+                <span>🔄</span> รีเฟรช
+            </button>
+            <div id="model-list" class="model-list">
+                <p style="text-align: center; color: #666;">ยังไม่มีโมเดลที่ฝึกแล้ว</p>
+            </div>
+        </div>
+    </div>
+<script>
+        // Global variables
+        let datasetEventSource = null;
+        let trainingEventSource = null;
+        let currentPage = 1;
+        let totalPages = 1;
+
+        // Utility functions
+        function showAlert(message, type = 'info') {
+            const alertArea = document.getElementById('alert-area');
+            const alert = document.createElement('div');
+            alert.className = `alert ${type}`;
+            alert.innerHTML = `
+                ${type === 'success' ? '✅' : type === 'error' ? '❌' : '⚠️'} ${message}
+            `;
+            alertArea.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+
+        async function fetchJSON(url, options = {}) {
+            try {
+                const response = await fetch(url, options);
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Request failed');
+                }
+                
+                return data;
+            } catch (error) {
+                console.error('Fetch error:', error);
+                throw error;
+            }
+        }
+
+        // System status
+        async function updateSystemStatus() {
+            try {
+                const status = await fetchJSON('/system/status');
+                const statusGrid = document.getElementById('system-status');
+                
+                statusGrid.innerHTML = `
+                    <div class="status-item ${status.checks.required_files.status ? 'success' : 'error'}">
+                        <div>📄 ไฟล์ระบบ</div>
+                        <div>${status.checks.required_files.status ? '✅ ครบถ้วน' : '❌ ไม่ครบ'}</div>
+                    </div>
+                    <div class="status-item ${status.checks.fonts.status ? 'success' : 'warning'}">
+                        <div>🔤 ฟอนต์</div>
+                        <div>${status.checks.fonts.count} ไฟล์</div>
+                    </div>
+                    <div class="status-item ${status.checks.corpus.status ? 'success' : 'warning'}">
+                        <div>📚 Corpus</div>
+                        <div>${status.checks.corpus.exists ? '✅ มี' : '❌ ไม่มี'}</div>
+                    </div>
+                    <div class="status-item ${status.checks.dataset.status ? 'success' : 'warning'}">
+                        <div>🖼️ Dataset</div>
+                        <div>${status.checks.dataset.count} รูป</div>
+                    </div>
+                    <div class="status-item ${status.checks.gpu.status ? 'success' : 'warning'}">
+                        <div>🎮 GPU</div>
+                        <div>${status.checks.gpu.available ? status.checks.gpu.name : 'ไม่พบ'}</div>
+                    </div>
+                `;
+                
+                // Update GPU select
+                if (status.checks.gpu.available) {
+                    document.getElementById('gpu-select').innerHTML = `
+                        <option value="0">${status.checks.gpu.name}</option>
+                    `;
+                }
+                
+                // Show/hide dataset preview
+                if (status.checks.dataset.count > 0) {
+                    document.getElementById('dataset-preview-section').classList.remove('hidden');
+                    loadDatasetPreview(1);
+                }
+                
+            } catch (error) {
+                console.error('System status error:', error);
+            }
+        }
+
+        // Font management
+        async function updateFontList() {
+            try {
+                const result = await fetchJSON('/list/fonts');
+                const fontList = document.getElementById('font-list');
+                const fontCount = document.getElementById('font-count');
+                
+                fontCount.textContent = result.total;
+                
+                if (result.files.length === 0) {
+                    fontList.innerHTML = '<li>ยังไม่มีฟอนต์ที่อัปโหลด</li>';
+                } else {
+                    fontList.innerHTML = result.files.map(file => `
+                        <li>
+                            <span>📄 ${file.name}</span>
+                            <span>${file.size}</span>
+                        </li>
+                    `).join('');
+                }
+            } catch (error) {
+                showAlert('ไม่สามารถโหลดรายการฟอนต์ได้', 'error');
+            }
+        }
+
+        // Dataset preview
+        async function loadDatasetPreview(page) {
+            try {
+                const result = await fetchJSON(`/dataset/preview/${page}`);
+                const gallery = document.getElementById('image-gallery');
+                const pageInfo = document.getElementById('page-info');
+                
+                currentPage = result.page;
+                totalPages = result.total_pages;
+                
+                pageInfo.textContent = `หน้า ${currentPage} / ${totalPages}`;
+                
+                gallery.innerHTML = result.images.map(img => `
+                    <div class="image-item">
+                        <img src="/dataset/image/${img.filename}" alt="${img.filename}">
+                        <div class="text">${img.text}</div>
+                    </div>
+                `).join('');
+                
+                // Update pagination buttons
+                document.getElementById('prev-page-btn').disabled = currentPage <= 1;
+                document.getElementById('next-page-btn').disabled = currentPage >= totalPages;
+                
+            } catch (error) {
+                console.error('Dataset preview error:', error);
+            }
+        }
+
+        // Model management
+        async function loadModels() {
+            try {
+                const result = await fetchJSON('/models/list');
+                const modelList = document.getElementById('model-list');
+                
+                if (result.models.length === 0) {
+                    modelList.innerHTML = '<p style="text-align: center; color: #666;">ยังไม่มีโมเดลที่ฝึกแล้ว</p>';
+                } else {
+                    modelList.innerHTML = result.models.map(model => `
+                        <div class="model-item">
+                            <div class="model-info">
+                                <div class="model-name">${model.filename}</div>
+                                <div class="model-meta">ขนาด: ${model.size} | สร้างเมื่อ: ${model.created}</div>
+                            </div>
+                            <button onclick="downloadModel('${model.filename}')" class="secondary" style="width: auto;">
+                                <span>💾</span> ดาวน์โหลด
+                            </button>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Load models error:', error);
+            }
+        }
+
+        async function downloadModel(filename) {
+            window.location.href = `/models/download/${filename}`;
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initial load
+            updateSystemStatus();
+            updateFontList();
+            loadModels();
+            
+            // Refresh system status every 5 seconds
+            setInterval(updateSystemStatus, 5000);
+            
+            // Font upload
+            document.getElementById('font-upload-btn').addEventListener('click', async () => {
+                const fileInput = document.getElementById('font-file-input');
+                if (fileInput.files.length === 0) {
+                    showAlert('กรุณาเลือกไฟล์ฟอนต์', 'warning');
+                    return;
+                }
+                
+                const formData = new FormData();
+                for (const file of fileInput.files) {
+                    formData.append('file', file);
+                }
+                
+                try {
+                    const result = await fetchJSON('/upload/font', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    showAlert(result.message, 'success');
+                    fileInput.value = '';
+                    await updateFontList();
+                    await updateSystemStatus();
+                    
+                } catch (error) {
+                    showAlert('อัปโหลดฟอนต์ล้มเหลว: ' + error.message, 'error');
+                }
+            });
+            
+            // Corpus upload
+            document.getElementById('corpus-upload-btn').addEventListener('click', async () => {
+                const fileInput = document.getElementById('corpus-file-input');
+                if (!fileInput.files[0]) {
+                    showAlert('กรุณาเลือกไฟล์ corpus', 'warning');
+                    return;
+                }
+                
+                const formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+                
+                try {
+                    const result = await fetchJSON('/upload/corpus', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    showAlert('อัปโหลด corpus สำเร็จ', 'success');
+                    document.getElementById('corpus-info').classList.remove('hidden');
+                    document.getElementById('corpus-lines').textContent = result.stats.lines;
+                    fileInput.value = '';
+                    await updateSystemStatus();
+                    
+                } catch (error) {
+                    showAlert('อัปโหลด corpus ล้มเหลว: ' + error.message, 'error');
+                }
+            });
+            
+            // Generate dataset
+            document.getElementById('generate-dataset-btn').addEventListener('click', async () => {
+                try {
+                    const result = await fetchJSON('/generate-dataset', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({})
+                    });
+                    
+                    showAlert(result.message, 'success');
+                    
+                    // Show progress area
+                    document.getElementById('dataset-status-area').classList.remove('hidden');
+                    document.getElementById('generate-dataset-btn').disabled = true;
+                    
+                    // Start monitoring
+                    if (datasetEventSource) datasetEventSource.close();
+                    datasetEventSource = new EventSource('/dataset-status');
+                    
+                    datasetEventSource.onmessage = (event) => {
+                        const data = JSON.parse(event.data);
+                        const logArea = document.getElementById('dataset-log');
+                        const progressBar = document.getElementById('dataset-progress-bar');
+                        
+                        logArea.textContent = JSON.stringify(data, null, 2);
+                        
+                        if (data.status === 'generating') {
+                            const progress = data.progress || 0;
+                            progressBar.style.width = `${progress}%`;
+                            progressBar.textContent = `${progress}%`;
+                        } else if (data.status === 'completed') {
+                            progressBar.style.width = '100%';
+                            progressBar.textContent = 'เสร็จสิ้น!';
+                            datasetEventSource.close();
+                            document.getElementById('generate-dataset-btn').disabled = false;
+                            updateSystemStatus();
+                            showAlert('สร้างชุดข้อมูลเสร็จสิ้น!', 'success');
+                        } else if (data.status === 'error') {
+                            progressBar.style.width = '0%';
+                            progressBar.textContent = 'เกิดข้อผิดพลาด!';
+                            datasetEventSource.close();
+                            document.getElementById('generate-dataset-btn').disabled = false;
+                            showAlert('เกิดข้อผิดพลาด: ' + data.message, 'error');
+                        }
+                    };
+                    
+                } catch (error) {
+                    showAlert('ไม่สามารถเริ่มสร้าง dataset: ' + error.message, 'error');
+                    document.getElementById('generate-dataset-btn').disabled = false;
+                }
+            });
+            
+            // Clear dataset
+            document.getElementById('clear-dataset-btn').addEventListener('click', async () => {
+                if (!confirm('คุณแน่ใจหรือไม่ที่จะลบ dataset ทั้งหมด?')) {
+                    return;
+                }
+                
+                try {
+                    const result = await fetchJSON('/clear/dataset', {
+                        method: 'POST'
+                    });
+                    
+                    showAlert(result.message, 'success');
+                    await updateSystemStatus();
+                    document.getElementById('dataset-preview-section').classList.add('hidden');
+                    
+                } catch (error) {
+                    showAlert('ลบ dataset ล้มเหลว: ' + error.message, 'error');
+                }
+            });
+            
+            // Start training
+            document.getElementById('start-training-btn').addEventListener('click', async () => {
+                const epochs = document.getElementById('epochs-input').value;
+                
+                try {
+                    const result = await fetchJSON('/start-training', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ epochs: parseInt(epochs) })
+                    });
+                    
+                    showAlert(result.message, 'success');
+                    
+                    document.getElementById('start-training-btn').disabled = true;
+                    document.getElementById('start-training-btn').innerHTML = '<span class="spinner"></span> กำลังฝึกสอน...';
+                    
+                    // Start monitoring
+                    if (trainingEventSource) trainingEventSource.close();
+                    trainingEventSource = new EventSource('/training-status');
+                    
+                    trainingEventSource.onmessage = (event) => {
+                        const data = JSON.parse(event.data);
+                        const logArea = document.getElementById('training-log');
+                        const progressBar = document.getElementById('training-progress-bar');
+                        
+                        logArea.textContent = JSON.stringify(data, null, 2);
+                        logArea.scrollTop = logArea.scrollHeight;
+                        
+                        if (data.status === 'training') {
+                            const progress = data.epoch_progress || 0;
+                            progressBar.style.width = `${progress}%`;
+                            progressBar.textContent = `Epoch ${data.current_epoch}/${data.total_epochs}: ${progress}%`;
+                        } else if (data.status === 'completed') {
+                            progressBar.style.width = '100%';
+                            progressBar.textContent = 'เสร็จสิ้น!';
+                            trainingEventSource.close();
+                            document.getElementById('start-training-btn').disabled = false;
+                            document.getElementById('start-training-btn').innerHTML = '<span>⚡</span> เริ่มการฝึกสอน';
+                            showAlert('การฝึกสอนเสร็จสิ้น!', 'success');
+                            loadModels();
+                        } else if (data.status === 'error') {
+                            progressBar.style.width = '0%';
+                            progressBar.textContent = 'เกิดข้อผิดพลาด!';
+                            trainingEventSource.close();
+                            document.getElementById('start-training-btn').disabled = false;
+                            document.getElementById('start-training-btn').innerHTML = '<span>⚡</span> เริ่มการฝึกสอน';
+                            showAlert('เกิดข้อผิดพลาด: ' + data.message, 'error');
+                        }
+                    };
+                    
+                    trainingEventSource.onerror = () => {
+                        showAlert('การเชื่อมต่อขาดหาย', 'error');
+                        trainingEventSource.close();
+                        document.getElementById('start-training-btn').disabled = false;
+                        document.getElementById('start-training-btn').innerHTML = '<span>⚡</span> เริ่มการฝึกสอน';
+                    };
+                    
+                } catch (error) {
+                    showAlert('ไม่สามารถเริ่มการฝึกสอน: ' + error.message, 'error');
+                    document.getElementById('start-training-btn').disabled = false;
+                    document.getElementById('start-training-btn').innerHTML = '<span>⚡</span> เริ่มการฝึกสอน';
+                }
+            });
+            
+            // Dataset preview pagination
+            document.getElementById('prev-page-btn').addEventListener('click', () => {
+                if (currentPage > 1) {
+                    loadDatasetPreview(currentPage - 1);
+                }
+            });
+            
+            document.getElementById('next-page-btn').addEventListener('click', () => {
+                if (currentPage < totalPages) {
+                    loadDatasetPreview(currentPage + 1);
+                }
+            });
+            
+            // Refresh models
+            document.getElementById('refresh-models-btn').addEventListener('click', () => {
+                loadModels();
+                showAlert('รีเฟรชรายการโมเดลแล้ว', 'success');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+# -- โฟลเดอร์ที่ถูกสร้างขึ้นอัตโนมัติและมีขนาดใหญ่ --
+
+# ชุดข้อมูลที่สร้างขึ้น
+dataset/
+
+# โมเดลที่ฝึกแล้ว
+models/
+
+# ไฟล์ Log การทำงาน
+logs/
+
+# รูปภาพทดสอบฟอนต์ที่สร้างขึ้น
+font_tests/
+
+# -- ไฟล์ของ Python และสภาพแวดล้อม (Virtual Environment) --
+
+# โฟลเดอร์ Python cache
+__pycache__/
+*.pyc
+
+# โฟลเดอร์ Virtual Environment ที่พบบ่อย
+venv/
+env/
+.venv/
+*.egg-info/
+
+# -- ไฟล์ของระบบปฏิบัติการ --
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
